@@ -22,7 +22,6 @@ public class MovieDetailActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
-//          Create the fragment, set its args, add it to the detail container
             MovieDetailFragment fragment = new MovieDetailFragment();
 
             Bundle b = getIntent().getBundleExtra(MainActivity.MOVIE_BUNDLE);
@@ -35,7 +34,6 @@ public class MovieDetailActivity extends Activity {
 
     }
 
-//  Returns to the list activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == android.R.id.home) {
