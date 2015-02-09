@@ -1,5 +1,11 @@
 package com.decco.scottwaite.audioplayer;
-
+/*
+Created By: Scott Waite
+Course: Java II
+Instructor: Michael Celey
+Assignment: Service Fundamentals
+Date: 02/08/2015
+ */
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
