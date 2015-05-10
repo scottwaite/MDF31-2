@@ -1,5 +1,6 @@
 package com.scottwaite.audioservice;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -51,7 +52,7 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
     */
-    public static class PlaceholderFragment extends Fragment {
+    public class PlaceholderFragment extends Fragment {
     private static final String TAG="mainactivity";
         public PlaceholderFragment() {
         }
@@ -99,7 +100,8 @@ public class MainActivity extends ActionBarActivity {
         }
 
         public void HandlePlayButtonClick(){
-            Log.i(TAG, "play button clicked");
+            //Log.i(TAG, "play button clicked");
+            playAudio();
         }
 
         public void HandleStopButtonClick(){
@@ -109,6 +111,17 @@ public class MainActivity extends ActionBarActivity {
         public void HandleNextButtonClick(){
             Log.i(TAG, "next button clicked");
         }
+
     }
 
+    private void playAudio() {
+        MediaPlayer player = MediaPlayer.create(this, R.raw.thirteenthirtyfive);
+        player.start();
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
+    }
 }

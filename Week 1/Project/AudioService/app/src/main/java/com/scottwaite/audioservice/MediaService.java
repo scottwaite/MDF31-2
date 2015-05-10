@@ -19,6 +19,11 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         return flags;
     }
 
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
     /** Called when MediaPlayer is ready */
     public void onPrepared(MediaPlayer player) {
         player.start();
