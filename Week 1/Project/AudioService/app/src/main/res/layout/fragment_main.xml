@@ -10,7 +10,6 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/songName"
         android:layout_alignParentBottom="true"
         >
 
@@ -19,37 +18,42 @@
             android:layout_height="wrap_content"
             android:text="&lt;&lt;"
             android:id="@+id/btnPrevious"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=">"
+            android:text="> II"
             android:id="@+id/btnPlay"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stop"
             android:id="@+id/btnStop"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=">>"
             android:id="@+id/btnNext"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
 
     </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Song Title"
-        android:id="@+id/songName" />
+        android:id="@+id/songName"
+        android:textAlignment="center" />
 
 </RelativeLayout>

@@ -100,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         public void HandlePlayButtonClick(){
-            //Log.i(TAG, "play button clicked");
+            Log.i(TAG, "play button clicked");
             playAudio();
         }
 
