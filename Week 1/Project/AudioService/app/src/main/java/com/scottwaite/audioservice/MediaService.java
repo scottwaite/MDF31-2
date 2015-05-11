@@ -12,7 +12,11 @@ Date: 05/08/2015
 package com.scottwaite.audioservice;
 
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -84,7 +88,8 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
            }
 
             mediaPlayer.start();
-        }
+            initNotification();
+       }
 
     }
 
@@ -146,5 +151,43 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         MediaService getService() {
             return MediaService.this;
         }
+    }
+
+
+
+
+
+
+
+    // Setup the ID for the notification bar
+    private static final int NOTIFICATION_ID = 1;
+
+
+
+    // Create a notification so the app can be accessed from the notification bar
+    private void initNotification() {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+        int icon = R.drawable.ic_launcher;
+        CharSequence tickerText = "Audio Service";
+        long when = System.currentTimeMillis();
+        Notification notification = new Notification(icon, tickerText, when);
+        notification.flags = Notification.FLAG_ONGOING_EVENT;
+        Context context = getApplicationContext();
+        CharSequence contentTitle = "Audio Service";
+        CharSequence contentText = "Return to Player";
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
+        notification.setLatestEventInfo(context, contentTitle, contentText,
+                contentIntent);
+        mNotificationManager.notify(NOTIFICATION_ID, notification);
+    }
+
+    // Clear notification
+    private void cancelNotification() {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+        mNotificationManager.cancel(NOTIFICATION_ID);
     }
 }
