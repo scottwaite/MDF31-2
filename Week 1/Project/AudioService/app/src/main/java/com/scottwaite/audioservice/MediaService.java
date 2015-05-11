@@ -1,31 +1,150 @@
+/*
+Created By: Scott Waite
+Course: MDF III
+Instructor: Michael Celey
+Assignment: Service Fundamentals
+Date: 05/08/2015
+*/
+
+
+
+
 package com.scottwaite.audioservice;
+
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Binder;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.util.Log;
 
-public class MediaService extends Service implements MediaPlayer.OnPreparedListener {
-    private static final String ACTION_PLAY="com.scottwaite.audioservice.PLAY";
-    MediaPlayer mMediaPlayer;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
-    public int onStartCommand(Intent intent, int flags, int startId) {
+public class MediaService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+    private MediaPlayer mediaPlayer; // the media player
+    private Integer songPosition; // position of song being played
+    private ArrayList<Integer> audioResId = new ArrayList<Integer>();
+    private boolean isPaused = false;
 
-        if (intent.getAction().equals(ACTION_PLAY)) {
-            mMediaPlayer = null;// initialize it here
-            mMediaPlayer.setOnPreparedListener(this);
-            mMediaPlayer.prepareAsync(); // prepare async to not block main thread
-        }
-        return flags;
-    }
+    private final IBinder audioBinder = new AudioBinder();
+
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return audioBinder;
     }
 
-    /** Called when MediaPlayer is ready */
-    public void onPrepared(MediaPlayer player) {
-        player.start();
+    @Override
+    public boolean onUnbind(Intent intent) {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        return false;
+    }
+
+    public void onCreate() {
+        super.onCreate(); // call super class method
+        songPosition = 0; // position in song array of first track
+        mediaPlayer = new MediaPlayer(); // create the media player
+
+        // get all audio files resource ids from the res/raw folder
+        Field[] fields = R.raw.class.getFields();
+        for (int i = 0; i < fields.length; i++) {
+            try {
+                int resId = fields[i].getInt(fields[i]);
+                audioResId.add(resId);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // set up media player properties
+        mediaPlayer.setAudioSessionId(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+
+        mediaPlayer.setOnCompletionListener(this);
+        mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.setOnPreparedListener(this);
+
+
+    }
+
+    public void playSong() {
+       if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            isPaused = true;
+        }
+        else {
+           if (!isPaused) {
+               mediaPlayer.reset();
+               mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
+           }
+
+            mediaPlayer.start();
+        }
+
+    }
+
+    public void stopSong() {
+        mediaPlayer.stop();
+        isPaused = false;
+    }
+
+    public void nextSong() {
+        mediaPlayer.reset();
+
+        Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + audioResId.size());
+        if (songPosition < audioResId.size()-1) {
+            songPosition++;
+        } else {
+            songPosition = 0;
+        }
+
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
+        mediaPlayer.start();
+    }
+
+    public void previousSong() {
+        Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + audioResId.size());
+        mediaPlayer.reset();
+        if (songPosition > 0) {
+            songPosition--;
+        } else {
+            songPosition = audioResId.size()-1;
+        }
+
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
+        mediaPlayer.start();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        if (songPosition < audioResId.size()) {
+            songPosition++;
+        } else {
+            songPosition = 0;
+        }
+
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
+        mediaPlayer.start();
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        return false;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+
+    }
+
+    public class AudioBinder extends Binder {
+        MediaService getService() {
+            return MediaService.this;
+        }
     }
 }

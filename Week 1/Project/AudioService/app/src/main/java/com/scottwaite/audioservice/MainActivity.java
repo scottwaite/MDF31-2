@@ -1,12 +1,23 @@
+/*
+Created By: Scott Waite
+Course: MDF III
+Instructor: Michael Celey
+Assignment: Service Fundamentals
+Date: 05/08/2015
+*/
+
 package com.scottwaite.audioservice;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -59,8 +70,14 @@ public class MainActivity extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
     */
     public class PlaceholderFragment extends Fragment {
-    private static final String TAG="mainactivity";
+
+        private static final String TAG="mainactivity";
+        private MediaService mediaService;
+        private Intent playIntent;
+        private boolean isBound = false;
+
         public PlaceholderFragment() {
+
         }
 
         @Override
@@ -102,58 +119,77 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
+        // create the connection to the service to play music from
+        private ServiceConnection serviceConnection = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    MediaService.AudioBinder binder = (MediaService.AudioBinder) service;
 
+                    mediaService = binder.getService();
+                    isBound = true;
+                }
 
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    isBound = false;
+                }
+            };
 
+        @Override
+        public void onStart() {
+            super.onStart();
 
-
-
-
-        public void HandlePreviousButtonClick(){
-            Log.i(TAG, "previous button clicked");
+            if(playIntent == null) {
+                playIntent = new Intent(getApplicationContext(), MediaService.class);
+                bindService(playIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+                startService(playIntent);
+            }
         }
 
+        @Override
+        public void onDestroy() {
+            stopService(playIntent);
+            mediaService = null;
+            super.onDestroy();
+        }
 
+        public void HandlePreviousButtonClick(){
 
+            Log.i(TAG, "previous button clicked");
 
-
-
-
-
+            mediaService.previousSong();
+        }
 
 
 
         public void HandlePlayButtonClick(){
             //show string in logcat
             Log.i(TAG, "play button clicked");
-            //play the song
-            playAudio();
-            //display the toast for Play
-            initNotification();
+
             Toast.makeText(getApplicationContext(), "Play", Toast.LENGTH_SHORT).show();
 
+            mediaService.playSong();
+
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         public void HandleStopButtonClick(){
             Log.i(TAG, "stop button clicked");
+            //stop the song
+
+            Toast.makeText(getApplicationContext(), "Stop", Toast.LENGTH_SHORT).show();
+
+            mediaService.stopSong();
+
         }
 
+
+
         public void HandleNextButtonClick(){
+
             Log.i(TAG, "next button clicked");
+
+            mediaService.nextSong();
         }
 
     }
@@ -170,6 +206,22 @@ public class MainActivity extends ActionBarActivity {
 
 
     private void playAudio() {
+        MediaPlayer player = MediaPlayer.create(this, R.raw.lounge);
+        player.start();
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.pause();
+                mp.release();
+            }
+        });
+    }
+
+
+
+
+
+    private void stopAudio() {
         MediaPlayer player = MediaPlayer.create(this, R.raw.thirteenthirtyfive);
         player.start();
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -180,6 +232,13 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
+
+
+
+
+
+
+
 
 
 

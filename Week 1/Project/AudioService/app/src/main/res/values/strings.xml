@@ -4,4 +4,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
+
+    <string-array name="songList">
+        <item>lounge</item>
+        <item>thirteenthirtyfive</item>
+        <item>tomorrow</item>
+    </string-array>
 </resources>
