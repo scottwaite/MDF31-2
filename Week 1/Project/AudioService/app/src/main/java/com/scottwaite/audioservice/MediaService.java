@@ -27,13 +27,15 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MediaService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
     private MediaPlayer mediaPlayer; // the media player
     private Integer songPosition; // position of song being played
     private ArrayList<Integer> audioResId = new ArrayList<Integer>();
     private boolean isPaused = false;
-
+    private boolean shouldLoop = false;
+    private boolean shouldShuffle = false;
     private final IBinder audioBinder = new AudioBinder();
 
 
@@ -67,13 +69,12 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
         // set up media player properties
         mediaPlayer.setAudioSessionId(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnErrorListener(this);
         mediaPlayer.setOnPreparedListener(this);
-
-
     }
 
     public void playSong() {
@@ -83,15 +84,57 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         }
         else {
            if (!isPaused) {
+               if (shouldShuffle) {
+                   songPosition = new Random().nextInt(audioResId.size());
+                   Log.i("MediaService", "Random Song Position: " + songPosition);
+               }
+
                mediaPlayer.reset();
                mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
            }
+
 
             mediaPlayer.start();
             initNotification();
        }
 
     }
+
+    public void setLoop(boolean shouldLoop) {
+    this.shouldLoop = shouldLoop;
+
+    }
+
+
+
+
+    public void setShuffle(boolean shouldShuffle){
+        this.shouldShuffle = shouldShuffle;
+    }
+
+
+
+
+    public void loopSong() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            isPaused = true;
+        }
+        else {
+            if (!isPaused) {
+                mediaPlayer.reset();
+                mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
+            }
+
+            mediaPlayer.start();
+
+
+        }
+
+    }
+
+
+
 
     public void stopSong() {
         mediaPlayer.stop();
@@ -100,26 +143,41 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
     public void nextSong() {
         mediaPlayer.reset();
+        if (shouldShuffle && !shouldLoop) {
+            songPosition = new Random().nextInt(audioResId.size());
+            Log.i("MediaService", "Random Song Position: " + songPosition);
+        } else if (!shouldShuffle && !shouldLoop) {
+
+            if (songPosition < audioResId.size()-1) {
+                songPosition++;
+            } else {
+                songPosition = 0;
+            }
+
+        }
 
         Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + audioResId.size());
-        if (songPosition < audioResId.size()-1) {
-            songPosition++;
-        } else {
-            songPosition = 0;
-        }
+
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
         mediaPlayer.start();
     }
 
     public void previousSong() {
-        Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + audioResId.size());
         mediaPlayer.reset();
-        if (songPosition > 0) {
-            songPosition--;
-        } else {
-            songPosition = audioResId.size()-1;
+        if (shouldShuffle && !shouldLoop) {
+            songPosition = new Random().nextInt(audioResId.size());
+            Log.i("MediaService", "Random Song Position: " + songPosition);
+        } else if (!shouldShuffle && ! shouldLoop) {
+
+            if (songPosition > 0) {
+                songPosition--;
+            } else {
+                songPosition = audioResId.size()-1;
+            }
         }
+        Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + audioResId.size());
+
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
         mediaPlayer.start();
@@ -127,11 +185,17 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        if (songPosition < audioResId.size()) {
-            songPosition++;
-        } else {
-            songPosition = 0;
+        if (shouldShuffle && !shouldLoop) {
+            songPosition = new Random().nextInt(audioResId.size());
+            Log.i("MediaService", "Random Song Position: " + songPosition);
+        } else if (!shouldShuffle && ! shouldLoop) {
+            if (songPosition < audioResId.size()) {
+                songPosition++;
+            } else {
+                songPosition = 0;
+            }
         }
+
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
         mediaPlayer.start();

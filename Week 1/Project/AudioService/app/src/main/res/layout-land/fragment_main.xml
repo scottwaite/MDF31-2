@@ -5,58 +5,46 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity$PlaceholderFragment"
-    android:background="#ffffcd89">
+    android:background="#ff65a6ff">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/linearLayout"
-        android:weightSum="1">
+        android:id="@+id/linearLayout">
 
         <Button
-            android:layout_width="46dp"
-            android:layout_height="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&lt;&lt;"
             android:id="@+id/btnPrevious"
-            android:textSize="20dp"
-            android:background="@drawable/previous" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.35" />
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
         <Button
-            android:layout_width="36dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="> II"
             android:id="@+id/btnPlay"
-            android:textSize="20dp"
-            android:background="@drawable/play" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.36" />
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
         <Button
-            android:layout_width="34dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop"
             android:id="@+id/btnStop"
-            android:textSize="20dp"
-            android:background="@drawable/stop" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.33" />
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
         <Button
-            android:layout_width="54dp"
-            android:layout_height="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=">>"
             android:id="@+id/btnNext"
-            android:textSize="20dp"
-            android:background="@drawable/next" />
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
 
     </LinearLayout>
@@ -68,8 +56,7 @@
         android:background="@drawable/albumartplaceholder"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp"
-        android:layout_alignParentEnd="false" />
+        android:layout_marginTop="46dp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -78,9 +65,8 @@
         android:text="Song Title"
         android:id="@+id/songName"
         android:textAlignment="center"
-        android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="56dp" />
+        android:layout_alignBaseline="@+id/songArtist"
+        android:layout_alignBottom="@+id/songArtist" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -88,9 +74,10 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Song Artist"
         android:id="@+id/songArtist"
-        android:layout_below="@+id/songName"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_above="@+id/cbShuffle"
+        android:layout_alignRight="@+id/cbLoop"
+        android:layout_alignEnd="@+id/cbLoop"
+        android:layout_marginBottom="54dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -98,10 +85,10 @@
         android:text="Shuffle"
         android:id="@+id/cbShuffle"
         android:checked="false"
-        android:layout_marginBottom="44dp"
         android:layout_above="@+id/linearLayout"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="88dp" />
 
     <CheckBox
         android:layout_width="wrap_content"

@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 
@@ -38,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .replace(R.id.container, new PlaceholderFragment())
                     .commit();
         }
     }
@@ -76,6 +77,14 @@ public class MainActivity extends ActionBarActivity {
         private Intent playIntent;
         private boolean isBound = false;
 
+        View rv;
+        ViewGroup container;
+        LayoutInflater inflater;
+        private ServiceConnection serviceConn;
+
+        private CheckBox cbShuffle;
+        private CheckBox cbLoop;
+
         public PlaceholderFragment() {
 
         }
@@ -84,6 +93,11 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            this.container = container;
+            this.inflater = inflater;
+            this.rv = rootView;
+
             Button btnPrevious = (Button)rootView.findViewById(R.id.btnPrevious);
             btnPrevious.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -115,10 +129,34 @@ public class MainActivity extends ActionBarActivity {
                     HandleNextButtonClick();
                 }
             });
+
+            cbLoop = (CheckBox)rootView.findViewById(R.id.cbLoop);
+            cbLoop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleLoop();
+                }
+            });
+
+            cbShuffle = (CheckBox)rootView.findViewById(R.id.cbShuffle);
+            cbShuffle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleShuffle();
+                }
+            });
+
             return rootView;
         }
+/*
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+            super.onConfigurationChanged(newConfig);
 
-
+            container.removeAllViews();
+            rv = inflater.inflate(R.layout.fragment_main, container, true);
+        }
+*/
         // create the connection to the service to play music from
         private ServiceConnection serviceConnection = new ServiceConnection() {
                 @Override
@@ -157,6 +195,8 @@ public class MainActivity extends ActionBarActivity {
 
             Log.i(TAG, "previous button clicked");
 
+            Toast.makeText(getApplicationContext(), "Previous", Toast.LENGTH_SHORT).show();
+
             mediaService.previousSong();
         }
 
@@ -166,7 +206,7 @@ public class MainActivity extends ActionBarActivity {
             //show string in logcat
             Log.i(TAG, "play button clicked");
 
-            Toast.makeText(getApplicationContext(), "Play", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Play/Pause", Toast.LENGTH_SHORT).show();
 
             mediaService.playSong();
 
@@ -189,9 +229,18 @@ public class MainActivity extends ActionBarActivity {
 
             Log.i(TAG, "next button clicked");
 
+            Toast.makeText(getApplicationContext(), "Forward", Toast.LENGTH_SHORT).show();
+
             mediaService.nextSong();
         }
 
+        public void toggleShuffle() {
+            mediaService.setShuffle(cbShuffle.isChecked());
+        }
+
+        public void toggleLoop() {
+            mediaService.setLoop((cbLoop.isChecked()));
+        }
     }
 
 
