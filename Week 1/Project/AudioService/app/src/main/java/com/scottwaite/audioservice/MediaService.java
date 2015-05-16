@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -32,11 +33,13 @@ import java.util.Random;
 public class MediaService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
     private MediaPlayer mediaPlayer; // the media player
     private Integer songPosition; // position of song being played
-    private ArrayList<Integer> audioResId = new ArrayList<Integer>();
+    // private ArrayList<Integer> audioResId = new ArrayList<Integer>();
     private boolean isPaused = false;
     private boolean shouldLoop = false;
     private boolean shouldShuffle = false;
     private final IBinder audioBinder = new AudioBinder();
+    private ArrayList<String> audioPathArray = new ArrayList<String>();
+    private Field[] fields = R.raw.class.getFields();
 
 
     @Override
@@ -57,11 +60,13 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         mediaPlayer = new MediaPlayer(); // create the media player
 
         // get all audio files resource ids from the res/raw folder
-        Field[] fields = R.raw.class.getFields();
         for (int i = 0; i < fields.length; i++) {
             try {
                 int resId = fields[i].getInt(fields[i]);
-                audioResId.add(resId);
+                String path = "android.resource://com.scottwaite.audioservice/" + resId;
+                Log.i("MediaService", path);
+                audioPathArray.add(path);
+                // audioResId.add(resId);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -85,23 +90,29 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         else {
            if (!isPaused) {
                if (shouldShuffle) {
-                   songPosition = new Random().nextInt(audioResId.size());
+                   songPosition = new Random().nextInt(fields.length);
                    Log.i("MediaService", "Random Song Position: " + songPosition);
                }
 
                mediaPlayer.reset();
-               mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
+
+               try {
+                   mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(audioPathArray.get(songPosition)));
+                   mediaPlayer.prepare();
+                   mediaPlayer.start();
+               } catch (Exception e) {
+                    e.printStackTrace();
+               }
+
            }
 
-
-            mediaPlayer.start();
             initNotification();
        }
 
     }
 
     public void setLoop(boolean shouldLoop) {
-    this.shouldLoop = shouldLoop;
+        this.shouldLoop = shouldLoop;
 
     }
 
@@ -113,29 +124,6 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     }
 
 
-
-
-    public void loopSong() {
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-            isPaused = true;
-        }
-        else {
-            if (!isPaused) {
-                mediaPlayer.reset();
-                mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
-            }
-
-            mediaPlayer.start();
-
-
-        }
-
-    }
-
-
-
-
     public void stopSong() {
         mediaPlayer.stop();
         isPaused = false;
@@ -144,11 +132,11 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     public void nextSong() {
         mediaPlayer.reset();
         if (shouldShuffle && !shouldLoop) {
-            songPosition = new Random().nextInt(audioResId.size());
+            songPosition = new Random().nextInt(fields.length);
             Log.i("MediaService", "Random Song Position: " + songPosition);
         } else if (!shouldShuffle && !shouldLoop) {
 
-            if (songPosition < audioResId.size()-1) {
+            if (songPosition < fields.length-1) {
                 songPosition++;
             } else {
                 songPosition = 0;
@@ -156,40 +144,50 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
         }
 
-        Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + audioResId.size());
+        Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + fields.length);
 
 
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
-        mediaPlayer.start();
+        try {
+            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(audioPathArray.get(songPosition)));
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void previousSong() {
         mediaPlayer.reset();
         if (shouldShuffle && !shouldLoop) {
-            songPosition = new Random().nextInt(audioResId.size());
+            songPosition = new Random().nextInt(fields.length);
             Log.i("MediaService", "Random Song Position: " + songPosition);
         } else if (!shouldShuffle && ! shouldLoop) {
 
             if (songPosition > 0) {
                 songPosition--;
             } else {
-                songPosition = audioResId.size()-1;
+                songPosition = fields.length-1;
             }
         }
-        Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + audioResId.size());
+        Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + fields.length);
 
 
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
-        mediaPlayer.start();
+        try {
+            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(audioPathArray.get(songPosition)));
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
         if (shouldShuffle && !shouldLoop) {
-            songPosition = new Random().nextInt(audioResId.size());
+            songPosition = new Random().nextInt(fields.length);
             Log.i("MediaService", "Random Song Position: " + songPosition);
         } else if (!shouldShuffle && ! shouldLoop) {
-            if (songPosition < audioResId.size()) {
+            if (songPosition < fields.length) {
                 songPosition++;
             } else {
                 songPosition = 0;
@@ -197,8 +195,13 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         }
 
 
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), audioResId.get(songPosition));
-        mediaPlayer.start();
+        try {
+            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(audioPathArray.get(songPosition)));
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
