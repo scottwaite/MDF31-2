@@ -126,6 +126,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
     public void stopSong() {
         mediaPlayer.stop();
+        cancelNotification();
         isPaused = false;
     }
 
