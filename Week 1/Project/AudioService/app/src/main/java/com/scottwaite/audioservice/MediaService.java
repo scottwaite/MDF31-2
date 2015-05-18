@@ -132,6 +132,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
     public void nextSong() {
         mediaPlayer.reset();
+        initNotification();
         if (shouldShuffle && !shouldLoop) {
             songPosition = new Random().nextInt(fields.length);
             Log.i("MediaService", "Random Song Position: " + songPosition);
@@ -142,7 +143,6 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
             } else {
                 songPosition = 0;
             }
-
         }
 
         Log.i("MediaService", "song pos: " + songPosition + " -- array size: " + fields.length);
@@ -158,6 +158,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void previousSong() {
+        initNotification();
         mediaPlayer.reset();
         if (shouldShuffle && !shouldLoop) {
             songPosition = new Random().nextInt(fields.length);

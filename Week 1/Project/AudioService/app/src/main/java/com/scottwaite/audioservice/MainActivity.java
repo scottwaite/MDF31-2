@@ -8,14 +8,10 @@ Date: 05/17/2015
 
 package com.scottwaite.audioservice;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -244,83 +240,4 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    private void playAudio() {
-        MediaPlayer player = MediaPlayer.create(this, R.raw.lounge);
-        player.start();
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.pause();
-                mp.release();
-            }
-        });
-    }
-
-
-
-
-
-    private void stopAudio() {
-        MediaPlayer player = MediaPlayer.create(this, R.raw.thirteenthirtyfive);
-        player.start();
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.pause();
-                mp.release();
-            }
-        });
-    }
-
-
-
-
-
-
-
-
-
-
-
-    // Setup the ID for the notification bar
-    private static final int NOTIFICATION_ID = 1;
-
-
-
-    // Create a notification so the app can be accessed from the notification bar
-    private void initNotification() {
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-        int icon = R.drawable.ic_launcher;
-        CharSequence tickerText = "Audio Service";
-        long when = System.currentTimeMillis();
-        Notification notification = new Notification(icon, tickerText, when);
-        notification.flags = Notification.FLAG_ONGOING_EVENT;
-        Context context = getApplicationContext();
-        CharSequence contentTitle = "Audio Service";
-        CharSequence contentText = "Return to Player";
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
-        notification.setLatestEventInfo(context, contentTitle, contentText,
-                contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, notification);
-    }
-
-    // Clear notification
-    private void cancelNotification() {
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-        mNotificationManager.cancel(NOTIFICATION_ID);
-    }
 }
