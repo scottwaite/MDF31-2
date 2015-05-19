@@ -182,8 +182,9 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public void onDestroy() {
+            unbindService(serviceConnection);
             stopService(playIntent);
-            mediaService = null;
+
             super.onDestroy();
         }
 

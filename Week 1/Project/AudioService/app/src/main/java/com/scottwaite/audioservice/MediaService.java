@@ -48,6 +48,11 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     public boolean onUnbind(Intent intent) {
         mediaPlayer.stop();
         mediaPlayer.release();
@@ -82,6 +87,13 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         mediaPlayer.setOnPreparedListener(this);
     }
 
+
+    public void releaseMediaPlayer(){
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
+
     public void playSong() {
        if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
@@ -95,7 +107,6 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
                }
 
                mediaPlayer.reset();
-
                try {
                    mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(audioPathArray.get(songPosition)));
                    mediaPlayer.prepare();
