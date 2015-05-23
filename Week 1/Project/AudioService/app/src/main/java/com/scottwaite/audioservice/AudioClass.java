@@ -22,14 +22,14 @@ public class AudioClass {
 
     public long getId(){
       return this.id;
-    };
+    }
 
     public String getName(){
         return this.name;
-    };
+    }
 
     public String getArtist(){
         return this.artist;
-    };
+    }
 
 }
