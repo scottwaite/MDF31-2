@@ -1,10 +1,15 @@
+/*
+Created By: Scott Waite
+Course: MDF III
+Instructor: Michael Celey
+Assignment: Building a Widget
+Date: May 22, 2015
+*/
+
 package com.scottwaite.android.simplewidgetdemo;
 
 import java.io.Serializable;
 
-/**
- * Created by scottwaite on 5/27/15.
- */
 public class GroceryItem implements Serializable {
 
     public String name;

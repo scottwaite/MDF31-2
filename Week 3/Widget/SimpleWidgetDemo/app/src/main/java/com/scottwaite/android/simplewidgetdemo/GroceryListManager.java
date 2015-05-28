@@ -1,3 +1,11 @@
+/*
+Created By: Scott Waite
+Course: MDF III
+Instructor: Michael Celey
+Assignment: Building a Widget
+Date: May 22, 2015
+*/
+
 package com.scottwaite.android.simplewidgetdemo;
 
 import android.content.Context;
@@ -10,9 +18,6 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-/**
- * Created by scottwaite on 5/27/15.
- */
 public class GroceryListManager {
     private static GroceryListManager instance = null;
     private ArrayList<GroceryItem> groceryList = null;

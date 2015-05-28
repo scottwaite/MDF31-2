@@ -1,3 +1,11 @@
+/*
+Created By: Scott Waite
+Course: MDF III
+Instructor: Michael Celey
+Assignment: Building a Widget
+Date: May 22, 2015
+*/
+
 package com.scottwaite.android.simplewidgetdemo;
 
 import android.app.Activity;
@@ -10,9 +18,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by scottwaite on 5/27/15.
- */
 public class GroceryListAdapter extends ArrayAdapter<GroceryItem> {
 
     private ArrayList<GroceryItem> items;
