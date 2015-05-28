@@ -1,0 +1,11 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="80dp"
+    android:minHeight="80dp"
+    android:updatePeriodMillis="30000"
+    android:initialLayout="@layout/widget_layout"
+    android:configure="com.scottwaite.android.simplewidgetdemo.ConfigActivity"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    tools:ignore="UnusedAttribute" >
+</appwidget-provider>
