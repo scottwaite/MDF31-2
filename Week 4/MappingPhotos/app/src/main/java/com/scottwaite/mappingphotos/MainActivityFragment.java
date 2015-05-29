@@ -1,3 +1,11 @@
+/*
+Created By: Scott Waite
+Course: MDF III
+Instructor: Michael Celey
+Assignment: Mapping Photos
+Date: May 28, 2015
+*/
+
 package com.scottwaite.mappingphotos;
 
 import android.app.Fragment;
@@ -7,9 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class MainActivityFragment extends Fragment {
 
     public MainActivityFragment() {

@@ -1,3 +1,12 @@
+/*
+Created By: Scott Waite
+Course: MDF III
+Instructor: Michael Celey
+Assignment: Mapping Photos
+Date: May 28, 2015
+*/
+
+
 package com.scottwaite.mappingphotos;
 
 import android.app.Activity;
